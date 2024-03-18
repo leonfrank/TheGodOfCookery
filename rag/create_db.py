@@ -13,6 +13,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.documents import Document
 from tqdm import tqdm
+from config import load_config
 
 
 # 获取文件路径函数
@@ -83,14 +84,8 @@ for line in lines:
         split_docs.append(Document(page_content=caipu_name+"怎么做", metadata={"caipu": line}))
 
 # 构建向量数据库
-embedding_model_name = 'F:/OneDrive/Pythoncode/BCE_model/bce-embedding-base_v1'
-embedding_model_kwargs = {'device': 'cuda:0'}
-embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
-embeddings = HuggingFaceEmbeddings(
-    model_name=embedding_model_name,
-    model_kwargs=embedding_model_kwargs,
-    encode_kwargs=embedding_encode_kwargs
-)
+hf_emb_config = load_config('rag', 'hf_emb_config')
+embeddings = HuggingFaceEmbeddings(**hf_emb_config)
 
 bm25retriever = BM25Retriever.from_documents(documents=split_docs)
 bm25retriever.k = 5

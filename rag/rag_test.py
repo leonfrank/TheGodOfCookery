@@ -1,4 +1,5 @@
 # 导入必要的库
+import os
 from langchain_community.llms.tongyi import Tongyi
 from interface import load_vector_db, load_retriever, load_chain
 
@@ -43,7 +44,7 @@ def run_terminal(llm, verbose=True):
 
 
 if __name__ == '__main__':
-    TONGYI_API_KEY = open("F:/OneDrive/Pythoncode/BCE_model/TONGYI_API_KEY.txt", "r").read().strip()
+    TONGYI_API_KEY = open(os.environ.get('HOME') + "/BCE_model/TONGYI_API_KEY.txt", "r").read().strip()
     verbose = True
 
     # 加载通义千问大语言模型

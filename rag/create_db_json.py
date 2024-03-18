@@ -9,12 +9,12 @@ from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.documents import Document
+from config import load_config
 
 # 正式在完整数据集上构建向量数据库时
 # 1. data_path为你的数据集路径
 # 2. 修改embedding_model_name为你的embedding模型路径
 data_path = "./data/tran_dataset_1000.json"
-embedding_model_name = 'F:/OneDrive/Pythoncode/BCE_model/bce-embedding-base_v1'
 
 split_docs = []
 with open(data_path, 'r', encoding='utf-8') as f:
@@ -33,14 +33,8 @@ for i in range(len(json_data)):
 
 
 # 构建向量数据库
-
-embedding_model_kwargs = {'device': 'cuda:0'}
-embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
-embeddings = HuggingFaceEmbeddings(
-    model_name=embedding_model_name,
-    model_kwargs=embedding_model_kwargs,
-    encode_kwargs=embedding_encode_kwargs
-)
+hf_emb_config = load_config('rag', 'hf_emb_config')
+embeddings = HuggingFaceEmbeddings(**hf_emb_config)
 
 bm25retriever = BM25Retriever.from_documents(documents=split_docs)
 bm25retriever.k = 5
